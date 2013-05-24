@@ -2,6 +2,8 @@
 #include "colorpolygon.h"
 
 static int shoulder = -90, elbow = 0, shoulderRight = -90, elbowRight = 0;
+static int shoulder2 = 0, elbow2 = 0, shoulderRight2 = 0, elbowRight2 = 0;
+
 static int leg = 0, legelbow = 0, legRight = 0, legelbowRight = 0;
 static int torso = -90;
 
@@ -27,7 +29,7 @@ void init(void)
 
     GLfloat light0_ambient[]  = {1, 1, 1, 1};   //环境光
     GLfloat light0_diffuse[]  = {1, 1, 1, 1};   //散射光
-    GLfloat light0_position[] = {0, 0, 0, 1};   //光源位置
+    GLfloat light0_position[] = {0, 5, 0, 1};   //光源位置
 
     // light 建立light指定的光源。light用形式为GL_LIGHTi的符号常数表示
     glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient);
@@ -43,12 +45,11 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // The glClear function clears buffers to preset values.
 	
 	glDisable (GL_LIGHTING); // 光照
-
 	GLfloat mat_ambient1[]  = {1,0,0,1};
 	GLfloat mat_emission[]  = {1,1,1,0};
 
-	GLfloat mat_ambient2[]  = {0.4,0.4,0.8,1};
-    GLfloat  no_emission[]  = {0,0,0,1};
+	//GLfloat mat_ambient2[]  = {0.4,0.4,0.8,1};
+    //GLfloat  no_emission[]  = {0,0,0,1};
 
 	glPushMatrix();
 	
@@ -70,7 +71,7 @@ void display(void)
 	glPushMatrix();	// 躯体
 		glTranslatef (0.0, -1.0, 0.0);
 		glScalef (1.0, 1.7, 0.5);
-		colorcube();
+		colorcube(); // 上色
 		//glScalef (2.0, 3.0, 1.0);
 		//glutWireCube (1.0);
 	glPopMatrix();
@@ -78,6 +79,8 @@ void display(void)
 	glPushMatrix();	// 手臂右手 上臂
 		glTranslatef (1.0, 0.5, 0.0); // 
 		glRotatef ((GLfloat) shoulderRight, 0.0, 0.0, 1.0);		// 右手活动
+
+		glRotatef ((GLfloat) shoulderRight2, 0.0, 1.0, 0.0);		// 右手活动
 		glTranslatef (1.0, 0.0, 0.0);
 
 		glPushMatrix();		// 前臂
@@ -91,6 +94,7 @@ void display(void)
 
 		glTranslatef (1.0, 0.0, 0.0);
 		glRotatef ((GLfloat) elbowRight, 0.0, 0.0, 1.0);
+		glRotatef ((GLfloat) elbowRight2, 0.0, 1.0, .0);
 		glTranslatef (1.0, 0.0, 0.0);
 
 		glPushMatrix();
@@ -106,6 +110,7 @@ void display(void)
 	glPushMatrix();	// 手臂左手
 		glTranslatef (-1.0, 0.5, 0.0);
 		glRotatef ((GLfloat) shoulder, 0.0, 0.0, 1.0);
+		glRotatef ((GLfloat) shoulder2, 0.0, 1.0, 0.0);
 		glTranslatef (1.0, 0.0, 0.0);
 
 		glPushMatrix();
@@ -117,6 +122,7 @@ void display(void)
 
 		glTranslatef (1.0, 0.0, 0.0);
 		glRotatef ((GLfloat) elbow, 0.0, 0.0, 1.0);
+		glRotatef ((GLfloat) elbow2, 0.0, 1.0, .0);
 		glTranslatef (1.0, 0.0, 0.0);
 		glPushMatrix();
 			//glScalef (2.0, 0.4, 1.0);
@@ -196,11 +202,13 @@ void displayT()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
     gluLookAt(r*cos(c*du), h, r*sin(c*du), 0, 0, 0, 0, 1, 0); //从视点看远点,y轴方向(0,1,0)是上方向
+	
+//	gluLookAt (0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);	//指定照相机的位置	
 	glScalef ( 0.5,  0.5, 0.5);
 	display();
 	
 }
-
+/*
 void reshape2 (int w, int h)
 {
 	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
@@ -211,7 +219,7 @@ void reshape2 (int w, int h)
 	glLoadIdentity();
 	glTranslatef (0.0, 0.0, -5.0);
 }
-
+*/
 void myreshape (int w, int h)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // The glClear function clears buffers to preset values.
@@ -219,7 +227,7 @@ void myreshape (int w, int h)
 	glMatrixMode (GL_PROJECTION);
 	glLoadIdentity ();
 		
-	gluPerspective(130.0, (GLfloat) w/(GLfloat) h, 1, 20);		//透视投影
+	gluPerspective(160.0, (GLfloat) w/(GLfloat) h, 1, 20);		//透视投影
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -265,6 +273,7 @@ void motion(int x,int y){
 	 rotax=x-positionx;
 	 displayT();	  
 }
+/*
 void reshape(int w, int h)
 {
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
@@ -276,9 +285,19 @@ void reshape(int w, int h)
     glLoadIdentity();
 	gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0);
 }
-
+*/
 void Mouse(int button, int state, int x, int y) //处理鼠标点击
 {
+	if(state==GLUT_DOWN && button==GLUT_LEFT_BUTTON){   // 鼠标左键被按下
+        glRotatef(15.0, 0.0, 10.0, 0.0);
+    }
+    if(state==GLUT_DOWN && button==GLUT_RIGHT_BUTTON){   // 鼠标右键被按下
+        glRotatef(15.0, 0.0, 0.0, 10.0);
+    }
+	if(state==GLUT_DOWN && button==GLUT_MIDDLE_BUTTON){   // 鼠标中键被按下
+        glRotatef(15.0, 10.0, 0.0, 0.0);
+    }
+	glutPostRedisplay();
     if(state==GLUT_DOWN) //第一次鼠标按下时,记录鼠标在窗口中的初始坐标
         oldmx=x,oldmy=y;
 }
@@ -291,11 +310,157 @@ void onMouseMove(int x,int y) //处理鼠标拖动
     else if(h<-1.0f) h=-1.0f;
     oldmx=x,oldmy=y; //把此时的鼠标坐标作为旧值，为下一次计算增量做准备
 }
+static int i = 0;
+
+void myidle() // jump
+{
+	if(i == 5){
+		//glutIdleFunc(0);
+		//glutPostRedisplay();
+		i = 0;
+	}
+	glTranslatef( 0.0, 3.0-i*6.0/4.0, 0.0 );
+	leg = 40 - 10*i;
+	legelbow = -80 + 20*i; // 左脚
+	legRight = 40 - 10*i;
+	legelbowRight = -80 + 20*i;
+
+	shoulder = 240 + i*30/4;
+	elbow = 20 - i * 5;
+	shoulderRight = 300 - i*30/4;
+	elbowRight = -20 + i * 5;
+
+	Sleep(200);
+	glutPostRedisplay();
+	i += 1;
+}
+
+void myidle2()
+{
+	//glTranslatef( 0.0, 3.0-i*6.0/4.0, 0.0 );
+	leg = 0;
+	legelbow = 0; // 左脚
+	legRight = 0;
+	legelbowRight = 0;
+	Sleep(200);
+	glutPostRedisplay();
+}
+
+void myidle3() // running
+{
+	if(i == 7){
+		//glutIdleFunc(0);
+		//glutPostRedisplay();
+		i = 0;
+	}
+	leg = 40 - 10*i;
+	legelbow = -80 + 10*i; // 左脚
+
+	legRight = -40 + 10*i;
+	legelbowRight = -80 + 10*i;
+
+	elbowRight2 = 20 + i * 10;
+	shoulderRight2 = -330 - i*30/4;
+	elbow2 = 20 + i * 10;
+	shoulder2 = 330 + i*30/4;
+
+	Sleep(200);
+	glutPostRedisplay();
+	i += 1;
+}
+
+void myidle4() // jump and somersault
+{
+	if(i >= 3 && i <= 6){
+		glRotatef(90, 1, 0, 0);
+	}
+	if(i == 10){
+		//glutIdleFunc(0);
+		//glutPostRedisplay();
+		i = 0;
+	}
+	//if( i < 3 || i > 6){
+		glTranslatef( 0.0, 3.0-i*6.0/10.0, 0.0 );
+	//}
+	leg = 180 - 18*i;
+	legelbow = -100 + 8*i; // 左脚
+	legRight = 180 - 18*i;
+	legelbowRight = -100 + 8*i;
+
+	shoulder = 240 + i*30/10;
+	elbow = 20 - i * 2;
+	shoulderRight = 300 - i*30/10;
+	elbowRight = -20 + i * 2;
+
+	Sleep(200);
+	glutPostRedisplay();
+	i += 1;
+}
 
 void keyboard (unsigned char key, int x, int y)
 {
 	switch (key) {
 		// left shoulder
+		case ' ':
+			//i = 0;
+			//glutIdleFunc(myidle);
+			
+			if(!first)
+			{
+				glutIdleFunc(myidle);
+				first=!first;
+			}
+			else
+			{
+				glutIdleFunc(0);
+				//glutIdleFunc(0);
+				first=!first;
+			}
+			
+			break;
+		case 'c':			
+			if(!first)
+			{
+				glutIdleFunc(myidle3);
+				first=!first;
+			}
+			else
+			{
+				glutIdleFunc(0);
+				//glutIdleFunc(0);
+				first=!first;
+			}
+			
+			break;
+		case 'v':			
+			if(!first)
+			{
+				glutIdleFunc(myidle4);
+				first=!first;
+			}
+			else
+			{
+				glutIdleFunc(0);
+				//glutIdleFunc(0);
+				first=!first;
+			}
+			break;
+		case 'x':
+			glTranslatef( 0.0, 3.0, 0.0 );
+			leg = 40;
+			legelbow = -80; // 左脚
+			legRight = 40;
+			legelbowRight = -80;
+			glutPostRedisplay();
+			break;
+		case 'z':
+			glTranslatef( 0.0, -3.0, 0.0 );
+			leg = 0;
+			legelbow = 0; // 左脚
+			legRight = 0;
+			legelbowRight = 0;
+			glutPostRedisplay();
+			break;
 		case 's':			
 			if(shoulder>-90)
 				break;
@@ -348,25 +513,25 @@ void keyboard (unsigned char key, int x, int y)
 			break;
 
 		// left leg
-		case 'h':
+		case 'y':
 			if(leg>90)
 				break;
 			leg = (leg + 5) % 360;	// leg一开始是0
 			glutPostRedisplay();
 			break;
-		case 'y':
+		case 'h':
 			if(leg<0)
 				break;
 			leg = (leg - 5) % 360;
 			glutPostRedisplay();
 			break;
-		case 'j':
-			if(legelbow>0)
+		case 'u':
+			if(legelbow>0)	// 左脚
 				break;
 			legelbow = (legelbow + 5) % 360;
 			glutPostRedisplay();
 			break;
-		case 'u':
+		case 'j':
 			if(legelbow<-90)
 				break;
 			legelbow = (legelbow - 5) % 360;
@@ -374,25 +539,25 @@ void keyboard (unsigned char key, int x, int y)
 			break;
 
 		// right leg
-		case 'k':
+		case 'i':
 			if(legRight>90)
 				break;
 			legRight = (legRight + 5) % 360;
 			glutPostRedisplay();
 			break;
-		case 'i':
+		case 'k':
 			if(legRight<0)
 				break;
 			legRight = (legRight - 5) % 360;
 			glutPostRedisplay();
 			break;
-		case 'l':
+		case 'o':
 			if(legelbowRight>0)
 				break;
 			legelbowRight = (legelbowRight + 5) % 360;
 			glutPostRedisplay();
 			break;
-		case 'o':
+		case 'l':
 			if(legelbowRight<-90)
 				break;
 			legelbowRight = (legelbowRight - 5) % 360;
@@ -428,20 +593,23 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);  // 所有的GLUT函数都有glut前缀并且那些完成一些初始化的函数有glutInit前缀
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // 你应该使用函数glutInitDisplayMode()定义显示方式
     // GLUT_RGBA或者GLUT_RGB。指定一个RGBA窗口，这是一个默认的颜色模式,GLUT_DEPTH.深度缓冲区。 
-    glutInitWindowSize (1000, 1000);     // 接下来我们设置窗口大小，使用函数glutInitWindowSize（）。 
-    glutInitWindowPosition (100, 100);  // 首先确定窗口位置（它默认的是屏幕左上角），我们使用函数glutInitWindowPosition（）
+    glutInitWindowSize (800, 800);     // 接下来我们设置窗口大小，使用函数glutInitWindowSize（）。 
+    glutInitWindowPosition (10, 10);  // 首先确定窗口位置（它默认的是屏幕左上角），我们使用函数glutInitWindowPosition（）
     glutCreateWindow (argv[0]); // 调用函数glutCreateWindow()来创建窗口了
 
     init ();
 
-    glutDisplayFunc(displayT); // glutDisplayFunc函数用于注册一个绘图函数， 这样操作系统在必要时刻就会对窗体进行重新绘制操作
-    glutIdleFunc(displayT);  //设置不断调用显示函数
+	glutDisplayFunc(display); // glutDisplayFunc函数用于注册一个绘图函数， 这样操作系统在必要时刻就会对窗体进行重新绘制操作
+    glutIdleFunc(display);
+//    glutDisplayFunc(displayT); // glutDisplayFunc函数用于注册一个绘图函数， 这样操作系统在必要时刻就会对窗体进行重新绘制操作
+//    glutIdleFunc(displayT);  //设置不断调用显示函数
 	glutReshapeFunc(myreshape); // 当你改变窗口大小时的回调(CallBack)函数,需要你自己编写的ReShape Function来注册 ,
     // 每当窗口的大小或形状改变时（包括窗口刚被创建时的那次），GLUT将会调用这个函数。这个回调函数接受这个窗口新的宽度和高度。
 
     //glutIdleFunc(myidle);   // glutIdleFunc设置全局的回调函数，当没有窗口事件到达时，GLUT程序功能可以执行后台处理任务或连续动画。
     // 如果启用，这个idle function会被不断调用，直到有窗口事件发生
     //glutMouseFunc(mymouse); // glutMouseFunc
+	//glutIdleFunc(myidle);
 	glutMouseFunc(Mouse);
 	glutMotionFunc(onMouseMove);
 	
